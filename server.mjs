@@ -1,23 +1,21 @@
 import express, { json } from 'express'
-import { $ } from 'zx'
+import shell from 'shelljs'
 const app = express()
 
 app.use(json())
 
-const shellRunner = async (cmd) => {
-  return await $`${cmd}`
-}
 //get all members
 app.get('/api/create', (req, res) => {
 
-  let spark_submit_cmd = `spark-submit --conf `
+  let spark_submit_cmd = `/opt/spark/bin/spark-submit `
+  spark_submit_cmd = `${spark_submit_cmd}--class ${req.query['class']} `
   for (let config of req.body['conf']) {
-    spark_submit_cmd = spark_submit_cmd + config['configName'] + '=' + config['configValue'] + ' '
+    spark_submit_cmd = spark_submit_cmd + '--conf ' + config['configName'] + '=' + config['configValue'] + ' '
   }
   spark_submit_cmd = spark_submit_cmd + req.body['jar'] + ' ' + req.body['args']
   console.log(spark_submit_cmd)
-  const test = shellRunner(spark_submit_cmd)
-  res.json({"test": "yes"})
+  const test = shell.exec(spark_submit_cmd)
+  res.json({"test": {"output": test}})
 })
 
 const PORT = process.env.PORT || 5000

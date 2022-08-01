@@ -4,7 +4,7 @@ const app = express()
 
 app.use(json())
 
-//get all members
+//create spark-submit command task
 app.get('/api/create', (req, res) => {
 
   let spark_submit_cmd = `spark-submit `

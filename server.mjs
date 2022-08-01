@@ -15,8 +15,8 @@ app.get('/api/create', (req, res) => {
   spark_submit_cmd = spark_submit_cmd + req.body['jar'] + ' ' + req.body['args']
   console.log(spark_submit_cmd)
   const test = shell.exec(spark_submit_cmd)
-  console.log(test.grep('Pi'))
-  res.json({"test": {"output": test.grep('Pi')}})
+  res.json({"test": {"output": {'stderr': test.stderr, 'stdout': test.stdout, 'code': test.code}}})
+
 })
 
 const PORT = process.env.PORT || 5000
